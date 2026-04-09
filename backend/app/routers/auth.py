@@ -87,15 +87,56 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     )
 
 
+def _verify_firebase_token(id_token: str) -> dict:
+    """Verify Firebase ID token using Google's public key endpoint (no SDK needed)."""
+    import httpx
+    # First try: use Firebase Admin SDK if available
+    try:
+        import firebase_admin
+        from firebase_admin import auth as firebase_auth, credentials
+        if not firebase_admin._apps:
+            if settings.FIREBASE_PROJECT_ID and settings.FIREBASE_PROJECT_ID != "placeholder":
+                cred = credentials.Certificate({
+                    "type": "service_account",
+                    "project_id": settings.FIREBASE_PROJECT_ID,
+                    "private_key": settings.FIREBASE_PRIVATE_KEY.replace("\\n", "\n") if settings.FIREBASE_PRIVATE_KEY else "",
+                    "client_email": settings.FIREBASE_CLIENT_EMAIL,
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                })
+                firebase_admin.initialize_app(cred)
+        decoded = firebase_auth.verify_id_token(id_token)
+        return decoded
+    except Exception:
+        pass
+
+    # Fallback: verify via Google tokeninfo endpoint
+    try:
+        resp = httpx.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}", timeout=10)
+        if resp.status_code != 200:
+            raise ValueError("Token verification failed")
+        data = resp.json()
+        if "error" in data:
+            raise ValueError(data.get("error_description", "Invalid token"))
+        return {
+            "uid": data.get("sub"),
+            "email": data.get("email", ""),
+            "name": data.get("name", ""),
+            "picture": data.get("picture"),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid Google token: {str(e)}")
+
+
 @router.post("/google", response_model=Token)
 def google_auth(data: GoogleAuthRequest, db: Session = Depends(get_db)):
     try:
-        from firebase_admin import auth as firebase_auth
-        decoded = firebase_auth.verify_id_token(data.id_token)
+        decoded = _verify_firebase_token(data.id_token)
         firebase_uid = decoded["uid"]
         email = decoded.get("email", "")
         full_name = decoded.get("name", email.split("@")[0])
         photo_url = decoded.get("picture")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Invalid Google token: {str(e)}")
 
