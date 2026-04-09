@@ -14,6 +14,8 @@ import useAuthStore from '../../store/authStore'
 import { authService } from '../../services/auth'
 import { signInWithGoogle } from '../../services/firebase'
 
+const FIREBASE_ENABLED = import.meta.env.VITE_FIREBASE_API_KEY?.startsWith('AIza')
+
 export default function Login() {
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading]   = useState(false)
@@ -96,18 +98,21 @@ export default function Login() {
             <h1 className="font-serif text-3xl text-espresso mb-1">Welcome back</h1>
             <p className="font-sans text-sm text-muted mb-8">Log in to track your orders and continue your style journey.</p>
 
-            {/* Google button */}
-            <Button
-              variant="outline"
-              onClick={handleGoogle}
-              loading={gLoading}
-              className="w-full mb-4 gap-3"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </Button>
-
-            <Divider label="or" className="my-5" />
+            {/* Google button — only shown when Firebase is configured */}
+            {FIREBASE_ENABLED && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleGoogle}
+                  loading={gLoading}
+                  className="w-full mb-4 gap-3"
+                >
+                  <GoogleIcon />
+                  Continue with Google
+                </Button>
+                <Divider label="or" className="my-5" />
+              </>
+            )}
 
             {/* Email/password form */}
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">

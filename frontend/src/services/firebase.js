@@ -11,8 +11,13 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-// Only initialize if config is present
-const isConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('your-')
+// Only initialize if config is present and not placeholder
+const isConfigured = (
+  firebaseConfig.apiKey &&
+  firebaseConfig.apiKey !== 'placeholder' &&
+  !firebaseConfig.apiKey.includes('your-') &&
+  firebaseConfig.apiKey.startsWith('AIza')
+)
 let app, auth, googleProvider
 
 if (isConfigured) {
