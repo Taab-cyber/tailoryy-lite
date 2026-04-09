@@ -14,6 +14,8 @@ import useAuthStore from '../../store/authStore'
 import { authService } from '../../services/auth'
 import { signInWithGoogle } from '../../services/firebase'
 
+const FIREBASE_ENABLED = import.meta.env.VITE_FIREBASE_API_KEY?.startsWith('AIza')
+
 export default function Register() {
   const [showPass, setShowPass]   = useState(false)
   const [loading, setLoading]     = useState(false)
@@ -98,12 +100,15 @@ export default function Register() {
             <h1 className="font-serif text-3xl text-espresso mb-1">Create your account</h1>
             <p className="font-sans text-sm text-muted mb-8">Start your custom fashion journey today.</p>
 
-            <Button variant="outline" onClick={handleGoogle} loading={gLoading} className="w-full mb-4 gap-3">
-              <GoogleIcon />
-              Continue with Google
-            </Button>
-
-            <Divider label="or" className="my-5" />
+            {FIREBASE_ENABLED && (
+              <>
+                <Button variant="outline" onClick={handleGoogle} loading={gLoading} className="w-full mb-4 gap-3">
+                  <GoogleIcon />
+                  Continue with Google
+                </Button>
+                <Divider label="or" className="my-5" />
+              </>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <Input
