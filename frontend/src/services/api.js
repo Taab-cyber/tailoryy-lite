@@ -6,9 +6,12 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 15000,
+  timeout: 30000,   // 30s — accounts for serverless cold starts
   headers: { 'Content-Type': 'application/json' },
 })
+
+// Warm up the backend on app load (fire-and-forget)
+axios.get(`${BASE_URL}/health`, { timeout: 5000 }).catch(() => {})
 
 // Attach token to every request
 api.interceptors.request.use(
@@ -27,8 +30,11 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout()
-      window.location.href = '/login'
+      const isAuthRoute = window.location.pathname === '/login' || window.location.pathname === '/register'
+      if (!isAuthRoute) {
+        useAuthStore.getState().logout()
+        window.location.href = '/login'
+      }
     }
     // Normalise error message
     const message =
