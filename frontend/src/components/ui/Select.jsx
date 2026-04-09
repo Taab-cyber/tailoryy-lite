@@ -2,17 +2,10 @@
 import React from 'react'
 import { ChevronDown } from 'lucide-react'
 
-export default function Select({
-  label,
-  error,
-  helper,
-  id,
-  options = [],
-  placeholder = 'Select an option',
-  className = '',
-  required = false,
-  ...props
-}) {
+const Select = React.forwardRef(function Select(
+  { label, error, helper, id, options = [], placeholder = 'Select an option', className = '', required = false, ...props },
+  ref
+) {
   const selectId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
   return (
@@ -25,6 +18,7 @@ export default function Select({
       )}
       <div className="relative">
         <select
+          ref={ref}
           id={selectId}
           className={`
             input-base appearance-none pr-10 cursor-pointer
@@ -54,4 +48,6 @@ export default function Select({
       )}
     </div>
   )
-}
+})
+
+export default Select

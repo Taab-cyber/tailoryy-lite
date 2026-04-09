@@ -1,15 +1,10 @@
 // Input.jsx — Form input with label, error state, and helper text
 import React from 'react'
 
-export default function Input({
-  label,
-  error,
-  helper,
-  id,
-  className = '',
-  required = false,
-  ...props
-}) {
+const Input = React.forwardRef(function Input(
+  { label, error, helper, id, className = '', required = false, ...props },
+  ref
+) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
   return (
@@ -24,6 +19,7 @@ export default function Input({
         </label>
       )}
       <input
+        ref={ref}
         id={inputId}
         className={`
           input-base
@@ -46,4 +42,6 @@ export default function Input({
       )}
     </div>
   )
-}
+})
+
+export default Input

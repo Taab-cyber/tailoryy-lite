@@ -1,18 +1,10 @@
 // Textarea.jsx — Multi-line text input with label and error state
 import React from 'react'
 
-export default function Textarea({
-  label,
-  error,
-  helper,
-  id,
-  rows = 4,
-  maxLength,
-  value,
-  className = '',
-  required = false,
-  ...props
-}) {
+const Textarea = React.forwardRef(function Textarea(
+  { label, error, helper, id, rows = 4, maxLength, value, className = '', required = false, ...props },
+  ref
+) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
   return (
@@ -24,6 +16,7 @@ export default function Textarea({
         </label>
       )}
       <textarea
+        ref={ref}
         id={inputId}
         rows={rows}
         maxLength={maxLength}
@@ -50,4 +43,6 @@ export default function Textarea({
       </div>
     </div>
   )
-}
+})
+
+export default Textarea
