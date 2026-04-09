@@ -15,7 +15,8 @@ from passlib.context import CryptContext
 from jose import jwt as jose_jwt
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# rounds=8 is faster on serverless cold starts (default 12 takes ~1s, 8 takes ~100ms)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=8)
 
 
 def hash_password(password: str) -> str:
