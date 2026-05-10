@@ -35,3 +35,11 @@ Thumbs.db
 # ─── Logs ───────────────────────────────────────
 *.log
 npm-debug.log*
+.vercel
+
+# Virtual environment
+backend/venv311/
+venv*/
+
+# Build output
+dist/

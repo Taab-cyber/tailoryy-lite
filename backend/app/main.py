@@ -16,8 +16,8 @@ app = FastAPI(
     title="Tailoryy API",
     description="Backend API for Tailoryy — premium custom stitching fashion house",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
 )
 
 app.state.limiter = limiter
@@ -48,7 +48,7 @@ async def on_startup():
 
 
 # ── Health check ──────────────────────────────────────────────────
-@app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
 async def health_check():
     return {"status": "ok", "app": "Tailoryy API", "version": "1.0.0"}
 
@@ -58,16 +58,16 @@ from app.routers import auth, orders, portfolio, fabrics, reviews  # noqa: E402
 from app.routers import payments, messages, wishlist, users         # noqa: E402
 from app.routers import notifications, contact, uploads, promos     # noqa: E402
 
-app.include_router(auth.router,          prefix="/auth",          tags=["Auth"])
-app.include_router(users.router,         prefix="/users",         tags=["Users"])
-app.include_router(orders.router,        prefix="/orders",        tags=["Orders"])
-app.include_router(portfolio.router,     prefix="/portfolio",     tags=["Portfolio"])
-app.include_router(fabrics.router,       prefix="/fabrics",       tags=["Fabrics"])
-app.include_router(reviews.router,       prefix="/reviews",       tags=["Reviews"])
-app.include_router(payments.router,      prefix="/payments",      tags=["Payments"])
-app.include_router(messages.router,      prefix="/messages",      tags=["Messages"])
-app.include_router(wishlist.router,      prefix="/wishlist",      tags=["Wishlist"])
-app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
-app.include_router(contact.router,       prefix="/contact",       tags=["Contact"])
-app.include_router(uploads.router,       prefix="/uploads",       tags=["Uploads"])
-app.include_router(promos.router,        prefix="/promos",        tags=["Promos"])
+app.include_router(auth.router,          prefix="/api/auth",          tags=["Auth"])
+app.include_router(users.router,         prefix="/api/users",         tags=["Users"])
+app.include_router(orders.router,        prefix="/api/orders",        tags=["Orders"])
+app.include_router(portfolio.router,     prefix="/api/portfolio",     tags=["Portfolio"])
+app.include_router(fabrics.router,       prefix="/api/fabrics",       tags=["Fabrics"])
+app.include_router(reviews.router,       prefix="/api/reviews",       tags=["Reviews"])
+app.include_router(payments.router,      prefix="/api/payments",      tags=["Payments"])
+app.include_router(messages.router,      prefix="/api/messages",      tags=["Messages"])
+app.include_router(wishlist.router,      prefix="/api/wishlist",      tags=["Wishlist"])
+app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
+app.include_router(contact.router,       prefix="/api/contact",       tags=["Contact"])
+app.include_router(uploads.router,       prefix="/api/uploads",       tags=["Uploads"])
+app.include_router(promos.router,        prefix="/api/promos",        tags=["Promos"])

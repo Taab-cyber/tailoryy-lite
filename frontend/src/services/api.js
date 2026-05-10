@@ -2,7 +2,7 @@
 import axios from 'axios'
 import useAuthStore from '../store/authStore'
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -11,7 +11,7 @@ const api = axios.create({
 })
 
 // Warm up the backend on app load (fire-and-forget)
-axios.get(`${BASE_URL}/health`, { timeout: 5000 }).catch(() => {})
+axios.get(`${BASE_URL}/health`, { timeout: 10000 }).catch(() => {})
 
 // Attach token to every request
 api.interceptors.request.use(
