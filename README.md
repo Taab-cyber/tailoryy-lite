@@ -1,5 +1,7 @@
 # Tailoryy Lite -- Premium Custom-Stitching Fashion Platform
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen)](https://tailoryy-lite-frontend.vercel.app)
+
 A full-stack made-to-order fashion e-commerce platform for the Indian market. Customers can order custom-tailored garments by providing inspiration images, measurements, and fabric preferences. Tailoryy's artisans stitch the garment from scratch and ship it home.
 
 **Tagline:** *Your Dream Outfit, Stitched to Perfection.*
