@@ -3,8 +3,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.config import settings
+import warnings
 
-is_sqlite = settings.DATABASE_URL.startswith("sqlite")
+db_url = settings.DATABASE_URL.strip()
+is_sqlite = db_url.startswith("sqlite")
+
+if is_sqlite and settings.ENVIRONMENT == "production":
+    warnings.warn(
+        "SQLite is not supported in production (data will not persist on serverless). "
+        "Set DATABASE_URL to a PostgreSQL connection string."
+    )
 
 connect_args = {"check_same_thread": False} if is_sqlite else {}
 
@@ -21,7 +29,7 @@ if not is_sqlite:
         pool_recycle=300,     # recycle connections every 5 min
     )
 
-engine = create_engine(settings.DATABASE_URL, **engine_kwargs)
+engine = create_engine(db_url, **engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
