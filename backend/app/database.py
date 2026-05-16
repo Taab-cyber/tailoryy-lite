@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from app.config import settings
 import warnings
 
-db_url = settings.DATABASE_URL.strip()
+db_url = settings.DATABASE_URL
 is_sqlite = db_url.startswith("sqlite")
 
 if is_sqlite and settings.ENVIRONMENT == "production":
