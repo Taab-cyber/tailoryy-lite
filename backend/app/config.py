@@ -1,6 +1,5 @@
 # config.py — Application settings loaded from environment variables
 from pydantic_settings import BaseSettings
-from pydantic import validator
 from typing import Optional
 
 
@@ -30,12 +29,13 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
     ENVIRONMENT: str = "development"
 
-    @validator("*", pre=True)
-    def strip_strings(cls, v):
-        """Strip trailing whitespace/newlines from all string env vars."""
-        if isinstance(v, str):
-            return v.strip()
-        return v
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Strip trailing whitespace/newlines from all string env vars
+        for field_name in self.model_fields:
+            val = getattr(self, field_name)
+            if isinstance(val, str):
+                object.__setattr__(self, field_name, val.strip())
 
     class Config:
         env_file = ".env"
