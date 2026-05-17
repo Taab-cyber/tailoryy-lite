@@ -29,14 +29,6 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
     ENVIRONMENT: str = "development"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Strip trailing whitespace/newlines from all string env vars
-        for field_name in self.model_fields:
-            val = getattr(self, field_name)
-            if isinstance(val, str):
-                object.__setattr__(self, field_name, val.strip())
-
     class Config:
         env_file = ".env"
         extra = "ignore"
